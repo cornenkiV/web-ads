@@ -7,9 +7,12 @@ import com.webads.web_ads_backend.model.Category;
 import com.webads.web_ads_backend.model.User;
 import com.webads.web_ads_backend.repository.AdRepository;
 import com.webads.web_ads_backend.repository.UserRepository;
+import com.webads.web_ads_backend.specification.AdSpecificationBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDateTime;
 
 @Service
@@ -42,5 +45,20 @@ public class AdService {
         ad.setUser(user);
 
         return adRepository.save(ad);
+    }
+
+
+    public Page<Ad> getAllAds(String category, String name, Double minPrice, Double maxPrice, Long userId, Pageable pageable) {
+        AdSpecificationBuilder builder = new AdSpecificationBuilder();
+
+        Specification<Ad> spec = builder
+                .withCategory(category)
+                .withName(name)
+                .withMinPrice(minPrice)
+                .withMaxPrice(maxPrice)
+                .withUserId(userId)
+                .build();
+
+        return adRepository.findAll(spec, pageable);
     }
 }

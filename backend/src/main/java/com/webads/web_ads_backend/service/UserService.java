@@ -32,6 +32,11 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found."));
     }
 
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User witn username: " + username + " not found"));
+    }
+
 
     public User register(UserRegistrationDTO registrationDTO) {
         if (userRepository.findByUsername(registrationDTO.getUsername()).isPresent()) {
