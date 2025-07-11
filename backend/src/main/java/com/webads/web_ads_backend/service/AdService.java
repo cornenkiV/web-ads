@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDateTime;
+import org.springframework.security.access.AccessDeniedException;
 
 @Service
 public class AdService {
@@ -60,5 +61,31 @@ public class AdService {
                 .build();
 
         return adRepository.findAll(spec, pageable);
+    }
+
+    public Ad getAd(Long id) {
+        return adRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ad with id " + id + " not found."));
+    }
+
+    public Ad updateAd(Long id, CreateAdDTO updateDTO, String username) {
+        Ad adToUpdate = getAd(id);
+
+        if (!adToUpdate.getUser().getUsername().equals(username)) {
+            throw new AccessDeniedException("You do not have permission to edit this ad.");
+        }
+
+        adToUpdate.setName(updateDTO.getName());
+        adToUpdate.setDescription(updateDTO.getDescription());
+        adToUpdate.setImageUrl(updateDTO.getImageUrl());
+        adToUpdate.setPrice(updateDTO.getPrice());
+        adToUpdate.setCity(updateDTO.getCity());
+        try {
+            adToUpdate.setCategory(Category.valueOf(updateDTO.getCategory().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid category: " + updateDTO.getCategory());
+        }
+
+        return adRepository.save(adToUpdate);
     }
 }

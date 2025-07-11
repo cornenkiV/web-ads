@@ -67,4 +67,19 @@ public class AdController {
 
         return ResponseEntity.ok(adDtoPage);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AdDTO> getAdById(@PathVariable Long id) {
+        Ad ad = adService.getAd(id);
+        AdDTO adDTO = new AdDTO(ad);
+        return ResponseEntity.ok(adDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AdDTO> updateAd(@PathVariable Long id, @Valid @RequestBody CreateAdDTO updateDTO, Authentication authentication) {
+        String username = authentication.getName();
+        Ad updatedAd = adService.updateAd(id, updateDTO, username);
+        AdDTO adDTO = new AdDTO(updatedAd);
+        return ResponseEntity.ok(adDTO);
+    }
 }
