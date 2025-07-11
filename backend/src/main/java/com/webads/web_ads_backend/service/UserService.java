@@ -1,5 +1,6 @@
-package com.webads.web_ads_backend;
+package com.webads.web_ads_backend.service;
 
+import com.webads.web_ads_backend.exceptions.ResourceNotFoundException;
 import com.webads.web_ads_backend.model.User;
 import com.webads.web_ads_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,6 @@ public class UserService {
      */
     public User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User with id: " + id + " not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found."));
     }
 }
