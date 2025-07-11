@@ -1,0 +1,46 @@
+package com.webads.web_ads_backend.service;
+
+import com.webads.web_ads_backend.dto.CreateAdDTO;
+import com.webads.web_ads_backend.exceptions.ResourceNotFoundException;
+import com.webads.web_ads_backend.model.Ad;
+import com.webads.web_ads_backend.model.Category;
+import com.webads.web_ads_backend.model.User;
+import com.webads.web_ads_backend.repository.AdRepository;
+import com.webads.web_ads_backend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+
+@Service
+public class AdService {
+
+    @Autowired
+    private AdRepository adRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public Ad createAd(CreateAdDTO createAdDTO, String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+
+        Ad ad = new Ad();
+        ad.setName(createAdDTO.getName());
+        ad.setDescription(createAdDTO.getDescription());
+        ad.setImageUrl(createAdDTO.getImageUrl());
+        ad.setPrice(createAdDTO.getPrice());
+        ad.setCity(createAdDTO.getCity());
+
+        try {
+            ad.setCategory(Category.valueOf(createAdDTO.getCategory().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid category: " + createAdDTO.getCategory());
+        }
+
+        ad.setPostDate(LocalDateTime.now());
+        ad.setUser(user);
+
+        return adRepository.save(ad);
+    }
+}

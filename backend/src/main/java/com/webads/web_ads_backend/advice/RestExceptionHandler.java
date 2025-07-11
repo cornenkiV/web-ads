@@ -21,4 +21,10 @@ public class RestExceptionHandler {
         String bodyOfResponse = ex.getMessage();
         return new ResponseEntity<>(bodyOfResponse, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(value = {IllegalArgumentException.class})
+    protected ResponseEntity<Object> handleBadRequest(IllegalArgumentException ex, WebRequest request) {
+        String responseBody = ex.getMessage();
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    }
 }
