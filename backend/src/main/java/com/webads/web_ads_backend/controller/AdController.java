@@ -82,4 +82,11 @@ public class AdController {
         AdDTO adDTO = new AdDTO(updatedAd);
         return ResponseEntity.ok(adDTO);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAd(@PathVariable Long id, Authentication authentication) {
+        String username = authentication.getName();
+        adService.deleteAd(id, username);
+        return ResponseEntity.noContent().build();
+    }
 }

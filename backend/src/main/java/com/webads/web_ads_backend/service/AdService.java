@@ -88,4 +88,14 @@ public class AdService {
 
         return adRepository.save(adToUpdate);
     }
+
+    public void deleteAd(Long id, String username) {
+        Ad adToDelete = getAd(id);
+
+        if (!adToDelete.getUser().getUsername().equals(username)) {
+            throw new AccessDeniedException("You do not have permission to delete this ad.");
+        }
+
+        adRepository.delete(adToDelete);
+    }
 }
