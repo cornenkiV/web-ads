@@ -11,7 +11,7 @@ const AppLayout: React.FC = () => {
             <Header style={{ position: 'fixed', zIndex: 1, width: '100%', padding: '0 24px' }}>
                 <NavBar />
             </Header>
-            <Content style={{ padding: '0 24px', marginTop: 88 }}>
+            <Content>
                 <div style={{ background: '#fff', padding: 24, minHeight: 380 }}>
                     <Outlet />
                 </div>

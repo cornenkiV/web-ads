@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import AppLayout from './components/layout/AppLayout';
+import LoginPage from './pages/LoginPage';
 
 const HomePage = () => <h1>Home Page</h1>;
-const LoginPage = () => <h1>Login</h1>;
 const RegisterPage = () => <h1>Register</h1>;
 const NewAdPage = () => <h1>Create ad</h1>;
 

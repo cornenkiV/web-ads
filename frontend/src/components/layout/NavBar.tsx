@@ -59,7 +59,7 @@ const NavBar: React.FC = () => {
         return (
             <Space direction={direction} size={size} style={{ width }}>
                 <Button onClick={() => handleNavigation('/login')} style={{ width }}>
-                    Login
+                    Log In
                 </Button>
                 <Button type="primary" onClick={() => handleNavigation('/register')} style={{ width }}>
                     Sign Up
