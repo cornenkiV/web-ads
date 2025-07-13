@@ -3,9 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 const HomePage = () => <h1>Home Page</h1>;
-const RegisterPage = () => <h1>Register</h1>;
 const NewAdPage = () => <h1>Create ad</h1>;
 
 function App() {

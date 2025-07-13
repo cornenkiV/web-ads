@@ -6,7 +6,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../hooks/useAuth';
 import axiosInstance from '../api/axiosInstance';
 import useBreakpoint from '../hooks/useBreakpoint';
-import loginIllustration from '../assetes/login-illustration2.svg';
+import loginIllustration from '../assets/login-illustration2.svg';
 import { AxiosError } from 'axios';
 
 const { Title } = Typography;
@@ -35,9 +35,9 @@ const LoginPage: React.FC = () => {
             let message = 'Unknown error, try again later';
             if (error instanceof AxiosError) {
                 const status = error.response?.status;
-                if (status == 403) {
+                if (status === 403) {
                     message = "Wrong username or password";
-                } else if (error.status == 429) {
+                } else if (error.status === 429) {
                     message = "Too many requests, try again later"
                 }
             }
@@ -59,7 +59,7 @@ const LoginPage: React.FC = () => {
                     <Row>
 
                         {!isMobile && (
-                            <Col md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '24px' }}>
+                            <Col md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '24px', borderRight: '1px solid #f0f0f0'  }}>
                                 <img src={loginIllustration} alt="Login" style={{ maxWidth: '100%', height: 'auto' }} />
                             </Col>
                         )}
