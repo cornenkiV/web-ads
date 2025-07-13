@@ -6,6 +6,8 @@ import { UserOutlined, LockOutlined, PhoneOutlined } from '@ant-design/icons';
 import axiosInstance from '../api/axiosInstance';
 import registerIllustration from '../assets/register-illustration.svg';
 import useBreakpoint from '../hooks/useBreakpoint';
+import authService from '../services/auth.service';
+import { IRegisterRequest } from '../types';
 
 const { Title } = Typography;
 
@@ -26,10 +28,14 @@ const RegisterPage: React.FC = () => {
     const isMobile = useBreakpoint();
 
     const onSubmit = async (data: any) => {
-        const { confirmPassword, ...postData } = data;
-
+        
+        const postData: IRegisterRequest = {
+            username: data.username,
+            password: data.password,
+            phoneNumber: data.phoneNumber,
+        };
         try {
-            await axiosInstance.post('/auth/register', postData);
+            await authService.register(postData);
 
             notificationApi.success({
                 message: 'Registration successful',

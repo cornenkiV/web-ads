@@ -8,6 +8,8 @@ import axiosInstance from '../api/axiosInstance';
 import useBreakpoint from '../hooks/useBreakpoint';
 import loginIllustration from '../assets/login-illustration2.svg';
 import { AxiosError } from 'axios';
+import authService from '../services/auth.service';
+import { ILoginRequest } from '../types';
 
 const { Title } = Typography;
 
@@ -26,8 +28,7 @@ const LoginPage: React.FC = () => {
 
     const onSubmit = async (data: any) => {
         try {
-            const response = await axiosInstance.post('/auth/login', data);
-            const { token } = response.data;
+            const { token } = await authService.login(data);
             login(token);
             navigate('/');
         } catch (error) {
