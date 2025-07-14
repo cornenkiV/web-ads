@@ -174,16 +174,18 @@ const HomePage: React.FC = () => {
             key: 'city',
         },
         {
-            title: 'Price',
+            title: <div style={{ textAlign: 'center', width: '100%' }}>Price</div>,
             dataIndex: 'price',
             key: 'price',
             align: 'right',
-            render: (price: number) => <strong>{price.toFixed(2)}</strong>,
+            width: 150,
+            render: (price: number) => <strong>{price.toFixed(2) + ' RSD'}</strong>,
         },
         {
             title: 'Category',
             dataIndex: 'category',
             key: 'category',
+            align: 'center',
             render: (category: AdCategory) => (
                 <Tag color={CATEGORY_COLOR_MAP[category] || 'default'}>
                     {category}
@@ -215,7 +217,7 @@ const HomePage: React.FC = () => {
     const columns = isMobile ? mobileColumns : desktopColumns;
 
     return (
-        <div style={{ marginTop: 80 }}>
+        <div style={{ marginTop: 80 , margin: 100, marginLeft: 200, marginRight: 200 }}>
             {notificationContextHolder}
             {modalContextHolder}
             <Card style={{ marginBottom: 24 }}>

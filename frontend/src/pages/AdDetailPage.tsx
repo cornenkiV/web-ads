@@ -81,7 +81,7 @@ export default function AdListingPageAntd() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-    
+
     const [notificationApi, notificationContextHolder] = notification.useNotification();
     const [modalApi, modalContextHolder] = Modal.useModal();
 
@@ -158,7 +158,12 @@ export default function AdListingPageAntd() {
                     <Card style={{ marginTop: 16 }}>
                         <Row justify="space-between" align="middle">
                             <Col>
+                                <Tag color={CATEGORY_COLOR_MAP[ad.category] || 'default'}>
+                                    {ad.category}
+                                </Tag>
+
                                 <Title level={3}>{ad.name}</Title>
+
                                 <Space>
                                     <Text type="secondary">
                                         <EnvironmentOutlined /> {ad.city}
@@ -172,9 +177,6 @@ export default function AdListingPageAntd() {
                                 <Title level={3} style={{ color: "#1890ff", marginBottom: 0 }}>
                                     {formatPrice(ad.price)}
                                 </Title>
-                                <Tag color={CATEGORY_COLOR_MAP[ad.category] || 'default'}>
-                                    {ad.category}
-                                </Tag>
                             </Col>
                         </Row>
                         <Divider />
@@ -242,7 +244,7 @@ export default function AdListingPageAntd() {
                                     danger
                                     block
                                     icon={<DeleteOutlined />}
-                                    onClick={() => {handleDelete(ad.id)}}
+                                    onClick={() => { handleDelete(ad.id) }}
                                 >
                                     Delete
                                 </Button>
