@@ -1,7 +1,9 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { IAuthContext, IDecodedJWT, IUser } from '../types';
+import { IAuthContext, IDecodedJWT, ILoginResponse, IUser } from '../types';
 import { jwtDecode } from 'jwt-decode';
-import axiosInstance from '../api/axiosInstance';
+import axiosInstance, { setToken } from '../api/axiosInstance';
+import authService from '../services/auth.service';
+import { Spin } from 'antd';
 
 const AuthContext = createContext<IAuthContext | null>(null);
 
@@ -11,46 +13,65 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<IUser | null>(null);
-    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        if (token) {
-            try {
-                const decodedToken: IDecodedJWT = jwtDecode(token);
-
-                if (decodedToken.exp * 1000 < Date.now()) {
-                    logout();
-                } else {
-                    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    setUser({ id: 0, username: decodedToken.sub, phoneNumber: '', registrationDate: '' }); 
-                    localStorage.setItem('token', token);
+        const initAuth = async () => {
+            const refreshToken = localStorage.getItem('refreshToken');
+            if (refreshToken) {
+                try {
+                    const response = await authService.refreshToken(refreshToken);
+                    setToken(response.token);
+                    const { token } = response;
+                    const decodedToken: { sub: string } = jwtDecode(token);
+                    setUser({ id: 0, username: decodedToken.sub, phoneNumber: '', registrationDate: '' });
+                    setIsAuthenticated(true);
+                } catch (error) {
+                    localStorage.removeItem('refreshToken');
+                    setIsAuthenticated(false);
+                    setUser(null);
                 }
-            } catch (error) {
-                console.error("Invalid token: ", error);
-                logout();
             }
-        } else {
-            delete axiosInstance.defaults.headers.common['Authorization'];
-            localStorage.removeItem('token');
-            setUser(null);
-        }
-    }, [token]);
+            setIsLoading(false);
+        };
+        initAuth();
+    }, []);
 
-    const login = (newToken: string) => {
-        setToken(newToken);
+    const login = (data: ILoginResponse) => {
+        const { token, refreshToken, username } = data;
+        localStorage.setItem('refreshToken', refreshToken);
+        setUser({ id: 0, username, phoneNumber: '', registrationDate: '' });
+        setIsAuthenticated(true);
     };
 
-    const logout = () => {
-        setToken(null);
+    const logout = async () => {
+        try {
+            await authService.logout();
+        } catch (error) {
+            console.error("Logout failed on server", error);
+        } finally {
+            localStorage.removeItem('refreshToken');
+            setUser(null);
+            setIsAuthenticated(false);
+            setToken(null);
+        }
     };
 
     const contextValue = {
-        isAuthenticated: !!token,
+        isAuthenticated,
         user,
-        token,
         login,
         logout,
     };
+
+    if (isLoading) {
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh', marginTop: 200}}>
+                <Spin size="large" />
+            </div>
+        );
+    }
 
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 };

@@ -4,12 +4,11 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Card, Form, Input, Button, Typography, Row, Col, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../hooks/useAuth';
-import axiosInstance from '../api/axiosInstance';
 import useBreakpoint from '../hooks/useBreakpoint';
 import loginIllustration from '../assets/login-illustration2.svg';
 import { AxiosError } from 'axios';
 import authService from '../services/auth.service';
-import { ILoginRequest } from '../types';
+import { setToken } from '../api/axiosInstance';
 
 const { Title } = Typography;
 
@@ -31,8 +30,10 @@ const LoginPage: React.FC = () => {
 
     const onSubmit = async (data: any) => {
         try {
-            const { token } = await authService.login(data);
-            login(token);
+            const response = await authService.login(data);
+            setToken(response.token);
+
+            login(response);
             navigate(from, { replace: true });
         } catch (error) {
             console.error('Failed login:', error);
@@ -63,7 +64,7 @@ const LoginPage: React.FC = () => {
                     <Row>
 
                         {!isMobile && (
-                            <Col md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '24px', borderRight: '1px solid #f0f0f0'  }}>
+                            <Col md={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '24px', borderRight: '1px solid #f0f0f0' }}>
                                 <img src={loginIllustration} alt="Login" style={{ maxWidth: '100%', height: 'auto' }} />
                             </Col>
                         )}

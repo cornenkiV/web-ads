@@ -8,8 +8,7 @@ export interface IUser {
 export interface IAuthContext {
     isAuthenticated: boolean;
     user: IUser | null;
-    token: string | null;
-    login: (token: string) => void;
+    login: (data: ILoginResponse) => void;
     logout: () => void;
 }
 
@@ -25,6 +24,13 @@ export interface ILoginRequest {
 
 export interface ILoginResponse {
     token: string;
+    refreshToken: string;
+    username: string;
+}
+
+export interface ITokenRefreshResponse {
+    token: string;
+    refreshToken: string;
 }
 
 export interface IRegisterRequest {

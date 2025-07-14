@@ -19,11 +19,15 @@ import org.springframework.security.access.AccessDeniedException;
 @Service
 public class AdService {
 
-    @Autowired
-    private AdRepository adRepository;
+    private final AdRepository adRepository;
+
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public AdService(AdRepository adRepository, UserRepository userRepository){
+        this.adRepository = adRepository;
+        this.userRepository = userRepository;
+    }
 
     public Ad createAd(CreateAdDTO createAdDTO, String username) {
         User user = userRepository.findByUsername(username)
