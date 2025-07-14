@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage';
 import AdDetailPage from './pages/AdDetailPage';
 import CreateAdPage from './pages/CreateAdPage';
 import EditAdPage from './pages/EditAd';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
             <Route path="/ads/create" element={<ProtectedRoute> <CreateAdPage /> </ProtectedRoute>} />
             <Route path="ads/:id" element={<AdDetailPage />} />
             <Route path="ads/edit/:id" element={<ProtectedRoute><EditAdPage /></ProtectedRoute>} />
+
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

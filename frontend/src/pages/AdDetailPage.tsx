@@ -124,11 +124,11 @@ export default function AdListingPageAntd() {
     }
 
     if (error) {
-        return <Alert message="Greška" description={error} type="error" showIcon />;
+        return <Alert style={{ marginTop: 60 }} message="Error" description={error} type="error" showIcon />;
     }
 
     if (!ad) {
-        return <Alert message="Info" description="Ad not found" type="info" showIcon />;
+        return <Alert style={{ marginTop: 60 }} message="Info" description="Ad not found" type="info" showIcon />;
     }
 
     const isOwner = isAuthenticated && user?.username === ad.seller.username;
