@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Card, Form, Input, Button, Typography, Row, Col, notification } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../hooks/useAuth';
@@ -21,16 +21,19 @@ const LoginPage: React.FC = () => {
         },
     });
 
+    const location = useLocation();
     const navigate = useNavigate();
     const { login } = useAuth();
     const isMobile = useBreakpoint();
     const [noptificationApi, notificationContextHolder] = notification.useNotification();
 
+    const from = location.state?.from?.pathname || '/';
+
     const onSubmit = async (data: any) => {
         try {
             const { token } = await authService.login(data);
             login(token);
-            navigate('/');
+            navigate(from, { replace: true });
         } catch (error) {
             console.error('Failed login:', error);
             let message = 'Unknown error, try again later';
