@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Input, Button, Space, Row, Col, Select, Checkbox, Form, Card, Typography, Tooltip, Tag, notification } from 'antd';
-import { EditOutlined, DeleteOutlined, SearchOutlined, ClearOutlined } from '@ant-design/icons';
+import { Table, Input, Button, Space, Row, Col, Select, Checkbox, Form, Card, Typography, Tooltip, Tag, notification, Modal } from 'antd';
+import { EditOutlined, DeleteOutlined, SearchOutlined, ClearOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table';
 import { useNavigate } from 'react-router-dom';
 import { IAd, AdCategory, Page } from '../types';
@@ -35,6 +35,7 @@ const HomePage: React.FC = () => {
     const { user, isAuthenticated } = useAuth();
     const isMobile = useBreakpoint();
     const [notificationApi, notificationContextHolder] = notification.useNotification();
+    const [modalApi, modalContextHolder] = Modal.useModal();
 
     const fetchAds = useCallback(async (currentFilters: IAdFilterParams) => {
         setLoading(true);
@@ -47,7 +48,7 @@ const HomePage: React.FC = () => {
             if (error instanceof AxiosError) {
                 const status = error.response?.status;
                 console.log("STATUS", status)
-                if (status ===  429) {
+                if (status === 429) {
                     message = "Too many requests, try again later"
                 }
             }
@@ -65,6 +66,27 @@ const HomePage: React.FC = () => {
     useEffect(() => {
         fetchAds(filters);
     }, [filters]);
+
+    const handleDelete = (id: number) => {
+        console.log("asd")
+        modalApi.confirm({
+            title: 'Are you sure you want to delete this ad?',
+            icon: <ExclamationCircleFilled />,
+            content: 'This action cant be undone.',
+            okText: 'Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await adService.deleteAd(id);
+                    notificationApi.success({ message: 'Ad successfully deleted' });
+                    fetchAds(filters);
+                } catch (error) {
+                    notificationApi.error({ message: 'Error deleting ad' });
+                }
+            },
+        });
+    };
 
     const handleTableChange = (pagination: any) => {
         setFilters(prev => ({
@@ -123,7 +145,7 @@ const HomePage: React.FC = () => {
                                     size="large"
                                     icon={<DeleteOutlined />}
                                     danger
-                                    onClick={(e) => { e.stopPropagation(); }}
+                                    onClick={(e) => { e.stopPropagation(); handleDelete(record.id); }}
                                 />
                             </Tooltip>
                         </Space>
@@ -180,7 +202,7 @@ const HomePage: React.FC = () => {
                                 <Button shape="circle" icon={<EditOutlined />} onClick={(e) => { e.stopPropagation(); navigate(`/ads/edit/${record.id}`) }} />
                             </Tooltip>
                             <Tooltip title="Delete">
-                                <Button shape="circle" icon={<DeleteOutlined />} danger onClick={(e) => { e.stopPropagation(); console.log('Delete ad', record.id) }} />
+                                <Button shape="circle" icon={<DeleteOutlined />} danger onClick={(e) => { e.stopPropagation(); handleDelete(record.id); }} />
                             </Tooltip>
                         </Space>
                     );
@@ -195,7 +217,8 @@ const HomePage: React.FC = () => {
     return (
         <div style={{ marginTop: 80 }}>
             {notificationContextHolder}
-            <Card style={{ marginBottom: 24}}>
+            {modalContextHolder}
+            <Card style={{ marginBottom: 24 }}>
                 <Title level={2}>Filters</Title>
                 <Form form={form} layout="vertical" onFinish={onFilterFinish}>
                     <Row gutter={16}>

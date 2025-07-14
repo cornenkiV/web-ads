@@ -14,6 +14,8 @@ import {
     Spin,
     Alert,
     Tag,
+    Modal,
+    notification,
 } from "antd"
 import {
     PhoneOutlined,
@@ -24,6 +26,7 @@ import {
     ClockCircleOutlined,
     EditOutlined,
     DeleteOutlined,
+    ExclamationCircleFilled,
 } from "@ant-design/icons"
 import { useNavigate, useParams } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
@@ -78,6 +81,31 @@ export default function AdListingPageAntd() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    
+    const [notificationApi, notificationContextHolder] = notification.useNotification();
+    const [modalApi, modalContextHolder] = Modal.useModal();
+
+    const handleDelete = (id: number) => {
+        modalApi.confirm({
+            title: 'Are you sure you want to delete this ad?',
+            icon: <ExclamationCircleFilled />,
+            content: 'This action cant be undone.',
+            okText: 'Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await adService.deleteAd(id);
+                    notificationApi.success({ message: 'Ad successfully deleted' });
+                    navigate('/');
+                } catch (error) {
+                    notificationApi.error({ message: 'Error deleting ad' });
+                }
+            },
+        });
+    };
+
+
     useEffect(() => {
         if (!id) return;
         setLoading(true);
@@ -100,7 +128,7 @@ export default function AdListingPageAntd() {
     }
 
     if (!ad) {
-        return <Alert message="Info" description="Oglas nije pronađen." type="info" showIcon />;
+        return <Alert message="Info" description="Ad not found" type="info" showIcon />;
     }
 
     const isOwner = isAuthenticated && user?.username === ad.seller.username;
@@ -115,6 +143,8 @@ export default function AdListingPageAntd() {
 
     return (
         <div style={{ minHeight: "100vh", padding: "24px", marginTop: 60 }}>
+            {notificationContextHolder}
+            {modalContextHolder}
             <Row gutter={[24, 24]} justify="center">
                 <Col xs={24} lg={16} xl={10}>
                     <Image
@@ -212,7 +242,7 @@ export default function AdListingPageAntd() {
                                     danger
                                     block
                                     icon={<DeleteOutlined />}
-                                    onClick={() => console.log('Brisanje oglasa pokrenuto')}
+                                    onClick={() => {handleDelete(ad.id)}}
                                 >
                                     Delete
                                 </Button>

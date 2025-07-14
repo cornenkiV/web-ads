@@ -62,11 +62,21 @@ const updateAd = async (id: string, adData: IAdFormData): Promise<IAd> => {
     }
 };
 
+const deleteAd = async (id: number): Promise<void> => {
+    try {
+        await axiosInstance.delete(`${API_URL}/${id}`);
+    } catch (error) {
+        console.error(`Failed to delete ad with id ${id}:`, error);
+        throw error;
+    }
+};
+
 const adService = {
     getAllAds,
     getAdById,
     createAd,
     updateAd,
+    deleteAd,
 };
 
 export default adService;
