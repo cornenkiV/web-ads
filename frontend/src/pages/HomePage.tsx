@@ -8,6 +8,7 @@ import adService, { IAdFilterParams } from '../services/ad.service';
 import { useAuth } from '../hooks/useAuth';
 import useBreakpoint from '../hooks/useBreakpoint';
 import { AxiosError } from 'axios';
+import type { TableProps } from 'antd';
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -108,7 +109,7 @@ const HomePage: React.FC = () => {
                     </Tag>
                     <p>Price: <strong> {record.price.toFixed(2)}</strong></p>
                     <strong>{record.city}</strong>
-                    {(isAuthenticated && user?.username === record.username) && (
+                    {(isAuthenticated && user?.username === record.seller.username) && (
                         <Space style={{ marginTop: '10px' }}>
                             <Tooltip title="Edit">
                                 <Button
@@ -172,7 +173,7 @@ const HomePage: React.FC = () => {
             key: 'actions',
             align: 'center',
             render: (_, record: IAd) => {
-                if (isAuthenticated && user?.username === record.username) {
+                if (isAuthenticated && user?.username === record.seller.username) {
                     return (
                         <Space size="middle">
                             <Tooltip title="Edit">
@@ -246,6 +247,7 @@ const HomePage: React.FC = () => {
                     current: (adsPage?.number ?? 0) + 1,
                     pageSize: adsPage?.size,
                     total: adsPage?.totalElements,
+                    position: ['bottomCenter']
                 }}
                 onChange={handleTableChange}
                 onRow={(record) => ({

@@ -54,7 +54,7 @@ export interface IAd {
     category: AdCategory;
     city: string;
     postDate: string;
-    username: string;
+    seller: ISeller;
 }
 
 export interface Page<T> {
@@ -63,4 +63,11 @@ export interface Page<T> {
     totalElements: number;
     number: number;
     size: number;
+}
+
+export interface ISeller {
+    id: number;
+    username: string;
+    phoneNumber: string;
+    registrationDate: string;
 }

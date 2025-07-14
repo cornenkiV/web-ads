@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import HomePage from './pages/HomePage';
+import AdDetailPage from './pages/AdDetailPage';
 
 const NewAdPage = () => <h1>Create ad</h1>;
 
@@ -19,6 +20,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/ads/create" element={<ProtectedRoute> <NewAdPage /> </ProtectedRoute>} />
+            <Route path="ads/:id" element={<AdDetailPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

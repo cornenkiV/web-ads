@@ -23,8 +23,19 @@ const getAllAds = async (params: IAdFilterParams): Promise<Page<IAd>> => {
     }
 };
 
+const getAdById = async (id: string): Promise<IAd> => {
+    try {
+        const response = await axiosInstance.get<IAd>(`${API_URL}/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Failed to fetch ad with id ${id}:`, error);
+        throw error;
+    }
+};
+
 const adService = {
     getAllAds,
+    getAdById
 };
 
 export default adService;

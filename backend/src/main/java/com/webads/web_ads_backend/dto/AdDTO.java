@@ -20,7 +20,7 @@ public class AdDTO {
     private String category;
     private String city;
     private LocalDateTime postDate;
-    private String username;
+    private AdSellerDTO seller;
 
     public AdDTO(Ad ad) {
         this.id = ad.getId();
@@ -32,7 +32,7 @@ public class AdDTO {
         this.city = ad.getCity();
         this.postDate = ad.getPostDate();
         if (ad.getUser() != null) {
-            this.username = ad.getUser().getUsername();
+            this.seller = new AdSellerDTO(ad.getUser());
         }
     }
 }
