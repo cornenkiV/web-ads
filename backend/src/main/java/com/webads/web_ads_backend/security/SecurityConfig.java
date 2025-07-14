@@ -21,8 +21,13 @@ import org.springframework.http.HttpMethod;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtRequestFilter jwtRequestFilter;
+
     @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+    public SecurityConfig(JwtRequestFilter jwtRequestFilter){
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

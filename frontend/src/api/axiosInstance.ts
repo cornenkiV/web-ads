@@ -5,7 +5,7 @@ import authService from '../services/auth.service';
 let token: string | null = null;
 
 const setToken = (token: string | null) => {
-    console.log("Setting new access token: ", token);
+    console.log("Setting a new access token:", token);
     token = token;
 }
 
@@ -16,8 +16,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        config.headers.Authorization = `Bearer ${token}`;
-        console.log("No access token to attach.");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
         return config;
     },
     (error) => Promise.reject(error)

@@ -26,17 +26,22 @@ import java.util.ArrayList;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtUtil jwtUtil;
+
+    private final RefreshTokenService refreshTokenService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, RefreshTokenService refreshTokenService){
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+        this.refreshTokenService = refreshTokenService;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private RefreshTokenService refreshTokenService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserRegistrationDTO registrationDTO) {

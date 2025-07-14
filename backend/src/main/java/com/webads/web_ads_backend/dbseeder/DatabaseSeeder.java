@@ -26,17 +26,21 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private final Logger logger = LoggerFactory.getLogger(DatabaseSeeder.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private AdRepository adRepository;
+    private final AdRepository adRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${db.seed}")
     private boolean recreateOnStartup;
+
+    @Autowired
+    public DatabaseSeeder(UserRepository userRepository, AdRepository adRepository, PasswordEncoder passwordEncoder){
+        this.userRepository = userRepository;
+        this.adRepository = adRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     private final Faker faker = new Faker();
 

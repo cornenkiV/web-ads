@@ -23,11 +23,15 @@ import org.springframework.http.HttpStatus;
 @RequestMapping("/api/ads")
 public class AdController {
 
-    @Autowired
-    private AdService adService;
+    private final AdService adService;
+
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
+    public AdController(AdService adService, UserService userService){
+        this.adService = adService;
+        this.userService = userService;
+    }
 
     @PostMapping
     public ResponseEntity<AdDTO> createAd(@Valid @RequestBody CreateAdDTO createAdDTO, Authentication authentication) {
