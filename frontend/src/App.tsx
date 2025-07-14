@@ -5,9 +5,11 @@ import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-
-const HomePage = () => <h1>Home Page</h1>;
-const NewAdPage = () => <h1>Create ad</h1>;
+import HomePage from './pages/HomePage';
+import AdDetailPage from './pages/AdDetailPage';
+import CreateAdPage from './pages/CreateAdPage';
+import EditAdPage from './pages/EditAd';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -18,7 +20,11 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/ads/create" element={<ProtectedRoute> <NewAdPage /> </ProtectedRoute>} />
+            <Route path="/ads/create" element={<ProtectedRoute> <CreateAdPage /> </ProtectedRoute>} />
+            <Route path="ads/:id" element={<AdDetailPage />} />
+            <Route path="ads/edit/:id" element={<ProtectedRoute><EditAdPage /></ProtectedRoute>} />
+
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
