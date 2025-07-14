@@ -32,3 +32,35 @@ export interface IRegisterRequest {
     password: string;
     phoneNumber: string;
 }
+
+export enum AdCategory {
+    CLOTHING = 'CLOTHING',
+    TOOLS = 'TOOLS',
+    SPORTS = 'SPORTS',
+    ACCESSORIES = 'ACCESSORIES',
+    FURNITURE = 'FURNITURE',
+    PETS = 'PETS',
+    GAMES = 'GAMES',
+    BOOKS = 'BOOKS',
+    TECHNOLOGY = 'TECHNOLOGY',
+}
+
+export interface IAd {
+    id: number;
+    name: string;
+    description: string;
+    imageUrl: string;
+    price: number;
+    category: AdCategory;
+    city: string;
+    postDate: string;
+    username: string;
+}
+
+export interface Page<T> {
+    content: T[];
+    totalPages: number;
+    totalElements: number;
+    number: number;
+    size: number;
+}

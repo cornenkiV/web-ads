@@ -5,8 +5,8 @@ import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import HomePage from './pages/HomePage';
 
-const HomePage = () => <h1>Home Page</h1>;
 const NewAdPage = () => <h1>Create ad</h1>;
 
 function App() {
