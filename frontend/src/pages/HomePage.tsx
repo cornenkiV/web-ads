@@ -97,10 +97,16 @@ const HomePage: React.FC = () => {
     };
 
     const onFilterFinish = (values: any) => {
-        const cleanedFilter = Object.fromEntries(
-            Object.entries(values).filter(([_, v]) => v != null && v !== '')
-        );
-        setFilters(prev => ({ ...prev, ...cleanedFilter, page: 0 }));
+        const newFilters: IAdFilterParams = { page: 0, size: filters.size };
+        
+        for (const key in values) {
+            const value = values[key];
+            if (value !== null && value !== undefined && value !== '') {
+                (newFilters as any)[key] = value;
+            }
+        }
+
+        setFilters(newFilters);
     };
 
     const resetFilters = () => {
@@ -217,7 +223,7 @@ const HomePage: React.FC = () => {
     const columns = isMobile ? mobileColumns : desktopColumns;
 
     return (
-        <div style={{ marginTop: 80 , margin: 100, marginLeft: 200, marginRight: 200 }}>
+        <div style={{ marginTop: 80, margin: 100, marginLeft: 200, marginRight: 200 }}>
             {notificationContextHolder}
             {modalContextHolder}
             <Card style={{ marginBottom: 24 }}>
