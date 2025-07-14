@@ -7,8 +7,8 @@ import RegisterPage from './pages/RegisterPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import AdDetailPage from './pages/AdDetailPage';
-
-const NewAdPage = () => <h1>Create ad</h1>;
+import CreateAdPage from './pages/CreateAdPage';
+import EditAdPage from './pages/EditAd';
 
 function App() {
   return (
@@ -19,8 +19,9 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/ads/create" element={<ProtectedRoute> <NewAdPage /> </ProtectedRoute>} />
+            <Route path="/ads/create" element={<ProtectedRoute> <CreateAdPage /> </ProtectedRoute>} />
             <Route path="ads/:id" element={<AdDetailPage />} />
+            <Route path="ads/edit/:id" element={<ProtectedRoute><EditAdPage /></ProtectedRoute>} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -195,7 +195,7 @@ const HomePage: React.FC = () => {
     return (
         <div style={{ marginTop: 80 }}>
             {notificationContextHolder}
-            <Card style={{ marginBottom: 24 }}>
+            <Card style={{ marginBottom: 24}}>
                 <Title level={2}>Filters</Title>
                 <Form form={form} layout="vertical" onFinish={onFilterFinish}>
                     <Row gutter={16}>

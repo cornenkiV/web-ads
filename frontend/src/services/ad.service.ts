@@ -1,5 +1,5 @@
 import axiosInstance from '../api/axiosInstance';
-import { IAd, Page } from '../types';
+import { AdCategory, IAd, Page } from '../types';
 
 const API_URL = '/ads';
 
@@ -11,6 +11,15 @@ export interface IAdFilterParams {
     minPrice?: number;
     maxPrice?: number;
     showMineOnly?: boolean;
+}
+
+export interface IAdFormData {
+    name: string;
+    description: string;
+    imageUrl: string;
+    price: number;
+    category: AdCategory;
+    city: string;
 }
 
 const getAllAds = async (params: IAdFilterParams): Promise<Page<IAd>> => {
@@ -33,9 +42,31 @@ const getAdById = async (id: string): Promise<IAd> => {
     }
 };
 
+const createAd = async (adData: IAdFormData): Promise<IAd> => {
+    try {
+        const response = await axiosInstance.post<IAd>(API_URL, adData);
+        return response.data;
+    } catch (error) {
+        console.error(`Failed to create ad:`, error);
+        throw error;
+    }
+};
+
+const updateAd = async (id: string, adData: IAdFormData): Promise<IAd> => {
+    try {
+        const response = await axiosInstance.put<IAd>(`${API_URL}/${id}`, adData);
+        return response.data;
+    }catch (error) {
+        console.error(`Failed to update ad with id ${id}:`, error);
+        throw error;
+    }
+};
+
 const adService = {
     getAllAds,
-    getAdById
+    getAdById,
+    createAd,
+    updateAd,
 };
 
 export default adService;
