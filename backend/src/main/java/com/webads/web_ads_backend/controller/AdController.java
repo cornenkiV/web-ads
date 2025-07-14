@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/ads")
@@ -58,7 +59,7 @@ public class AdController {
                 User user = (User) userService.getUserByUsername(authentication.getName());
                 userId = user.getId();
             } else {
-                return ResponseEntity.ok(Page.empty(pageable));
+                return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
             }
         }
 

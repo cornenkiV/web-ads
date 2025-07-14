@@ -1,5 +1,5 @@
 import axiosInstance from '../api/axiosInstance';
-import { ILoginRequest, ILoginResponse, IRegisterRequest, IUser } from '../types';
+import { ILoginRequest, ILoginResponse, IRegisterRequest, IUser, ITokenRefreshResponse } from '../types';
 
 const AUTH_API_URL = '/auth';
 
@@ -21,9 +21,21 @@ const register = async (userData: IRegisterRequest): Promise<IUser> => {
     }
 };
 
+const refreshToken = async (token: string): Promise<ITokenRefreshResponse> => {
+    const response = await axiosInstance.post<ITokenRefreshResponse>('/auth/refresh', { refreshToken: token });
+    console.log("REFRESH: ", response)
+    return response.data;
+};
+
+const logout = async (): Promise<void> => {
+    await axiosInstance.post('/auth/logout', {});
+};
+
 const authService = {
     login,
     register,
+    refreshToken,
+    logout,
 };
 
 export default authService;
