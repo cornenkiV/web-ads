@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { Table, Input, Button, Space, Row, Col, Select, Checkbox, Form, Card, Typography, Tooltip, Tag, notification, Modal } from 'antd';
 import { EditOutlined, DeleteOutlined, SearchOutlined, ClearOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table';
@@ -28,7 +28,6 @@ const CATEGORY_COLOR_MAP: Record<AdCategory, string> = {
 const HomePage: React.FC = () => {
     const [adsPage, setAdsPage] = useState<Page<IAd>>();
     const [loading, setLoading] = useState<boolean>(true);
-    const [filters, setFilters] = useState<IAdFilterParams>({ page: 0, size: 10 });
 
     const [form] = Form.useForm();
     const navigate = useNavigate();
@@ -36,6 +35,28 @@ const HomePage: React.FC = () => {
     const isMobile = useBreakpoint();
     const [notificationApi, notificationContextHolder] = notification.useNotification();
     const [modalApi, modalContextHolder] = Modal.useModal();
+
+    
+    type FilterAction =
+        | { type: 'SET_FILTERS', payload: IAdFilterParams }
+        | { type: 'SET_PAGE', payload: { page: number, size: number } }
+        | { type: 'RESET_FILTERS' };
+
+
+    const filterReducer = (state: IAdFilterParams, action: FilterAction): IAdFilterParams => {
+        switch (action.type) {
+            case 'SET_FILTERS':
+                return { ...state, ...action.payload, page: 0 };
+            case 'SET_PAGE':
+                return { ...state, ...action.payload };
+            case 'RESET_FILTERS':
+                return { page: 0, size: state.size };
+            default:
+                return state;
+        }
+    };
+    
+    const [filters, dispatch] = useReducer(filterReducer, { page: 0, size: 20 });
 
     const fetchAds = useCallback(async (currentFilters: IAdFilterParams) => {
         setLoading(true);
@@ -88,17 +109,14 @@ const HomePage: React.FC = () => {
         });
     };
 
+
     const handleTableChange = (pagination: any) => {
-        setFilters(prev => ({
-            ...prev,
-            page: pagination.current - 1,
-            size: pagination.pageSize,
-        }));
+        dispatch({ type: 'SET_PAGE', payload: { page: pagination.current - 1, size: pagination.pageSize } });
     };
 
     const onFilterFinish = (values: any) => {
         const newFilters: IAdFilterParams = { page: 0, size: filters.size };
-        
+
         for (const key in values) {
             const value = values[key];
             if (value !== null && value !== undefined && value !== '') {
@@ -106,12 +124,12 @@ const HomePage: React.FC = () => {
             }
         }
 
-        setFilters(newFilters);
+        dispatch({ type: 'SET_FILTERS', payload: newFilters });
     };
 
     const resetFilters = () => {
         form.resetFields();
-        setFilters({ page: 0, size: 10 });
+        dispatch({ type: 'RESET_FILTERS' });
     };
 
     const mobileColumns: ColumnsType<IAd> = [
@@ -229,7 +247,7 @@ const HomePage: React.FC = () => {
     };
 
     return (
-        <div style={ containerStyle }>
+        <div style={containerStyle}>
             {notificationContextHolder}
             {modalContextHolder}
             <Card style={{ marginBottom: 24 }}>
