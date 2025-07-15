@@ -222,8 +222,14 @@ const HomePage: React.FC = () => {
 
     const columns = isMobile ? mobileColumns : desktopColumns;
 
+    const containerStyle: React.CSSProperties = {
+        marginTop: 80,
+        marginLeft: isMobile ? 15 : 100,
+        marginRight: isMobile ? 15 : 100,
+    };
+
     return (
-        <div style={{ marginTop: 80, margin: 100, marginLeft: 200, marginRight: 200 }}>
+        <div style={ containerStyle }>
             {notificationContextHolder}
             {modalContextHolder}
             <Card style={{ marginBottom: 24 }}>
