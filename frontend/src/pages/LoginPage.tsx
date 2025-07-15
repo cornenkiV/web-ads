@@ -8,7 +8,7 @@ import useBreakpoint from '../hooks/useBreakpoint';
 import loginIllustration from '../assets/login-illustration2.svg';
 import { AxiosError } from 'axios';
 import authService from '../services/auth.service';
-import { setToken } from '../api/axiosInstance';
+import { setAuthToken  } from '../api/axiosInstance';
 
 const { Title } = Typography;
 
@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
     const onSubmit = async (data: any) => {
         try {
             const response = await authService.login(data);
-            setToken(response.token);
+            setAuthToken(response.token);
 
             login(response);
             navigate(from, { replace: true });

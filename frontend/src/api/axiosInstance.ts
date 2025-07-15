@@ -2,12 +2,15 @@ import axios, { InternalAxiosRequestConfig } from 'axios';
 import authService from '../services/auth.service';
 
 
-let token: string | null = null;
-
-const setToken = (token: string | null) => {
-    console.log("Setting a new access token:", token);
-    token = token;
-}
+const tokenManager = {
+    token: null as string | null,
+    setToken(token: string | null) {
+        this.token = token;
+    },
+    getToken() {
+        return this.token;
+    },
+};
 
 
 const axiosInstance = axios.create({
@@ -16,6 +19,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
+        const token = tokenManager.getToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -29,6 +33,10 @@ axiosInstance.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        if (originalRequest.url.includes('/refresh-token')) {
+            return Promise.reject(error);
+        }
+
         if (error.response?.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true;
 
@@ -41,7 +49,7 @@ axiosInstance.interceptors.response.use(
                 const response = await authService.refreshToken(refreshToken);
                 const newToken = response.token;
 
-                setToken(newToken);
+                tokenManager.setToken(newToken);
 
                 originalRequest.headers.Authorization = `Bearer ${newToken}`;
                 return axiosInstance(originalRequest);
@@ -56,5 +64,5 @@ axiosInstance.interceptors.response.use(
     }
 );
 
-export { setToken };
+export const setAuthToken = tokenManager.setToken.bind(tokenManager);
 export default axiosInstance;

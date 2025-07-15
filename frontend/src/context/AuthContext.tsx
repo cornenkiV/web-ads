@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { IAuthContext, IDecodedJWT, ILoginResponse, IUser } from '../types';
 import { jwtDecode } from 'jwt-decode';
-import axiosInstance, { setToken } from '../api/axiosInstance';
+import axiosInstance, { setAuthToken  } from '../api/axiosInstance';
 import authService from '../services/auth.service';
 import { Spin } from 'antd';
 
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             if (refreshToken) {
                 try {
                     const response = await authService.refreshToken(refreshToken);
-                    setToken(response.token);
+                    setAuthToken(response.token);
                     const { token } = response;
                     const decodedToken: { sub: string } = jwtDecode(token);
                     setUser({ id: 0, username: decodedToken.sub, phoneNumber: '', registrationDate: '' });
@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     localStorage.removeItem('refreshToken');
                     setIsAuthenticated(false);
                     setUser(null);
+                    setAuthToken(null);
                 }
             }
             setIsLoading(false);
@@ -54,7 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             localStorage.removeItem('refreshToken');
             setUser(null);
             setIsAuthenticated(false);
-            setToken(null);
+            setAuthToken(null);
         }
     };
 
