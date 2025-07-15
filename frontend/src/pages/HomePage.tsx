@@ -46,7 +46,7 @@ const HomePage: React.FC = () => {
     const filterReducer = (state: IAdFilterParams, action: FilterAction): IAdFilterParams => {
         switch (action.type) {
             case 'SET_FILTERS':
-                return { ...state, ...action.payload, page: 0 };
+                return { size: state.size, ...action.payload, page: 0 };
             case 'SET_PAGE':
                 return { ...state, ...action.payload };
             case 'RESET_FILTERS':
