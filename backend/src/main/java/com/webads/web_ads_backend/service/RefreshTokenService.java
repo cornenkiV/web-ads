@@ -30,10 +30,22 @@ public class RefreshTokenService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Finds a refresh token by token
+     *
+     * @param token refresh token to search for
+     * @return {@link Optional} containing the {@link RefreshToken}
+     */
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
+    /**
+     * Creates a new refresh token for a given user
+     *
+     * @param username username of the user
+     * @return {@link RefreshToken} object.
+     */
     public RefreshToken createRefreshToken(String username) {
         RefreshToken refreshToken = new RefreshToken();
 
@@ -45,6 +57,13 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
+    /**
+     * Verifies if a given refresh token has expired
+     *
+     * @param token refresh token to verify
+     * @return same refresh token if it is still valid
+     * @throws TokenRefreshException if the token has expired
+     */
     public RefreshToken verifyExpiration(RefreshToken token) {
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
@@ -53,6 +72,11 @@ public class RefreshTokenService {
         return token;
     }
 
+    /**
+     * Deletes all refresh tokens associated with a specific user ID
+     *
+     * @param userId ID of the user
+     */
     @Transactional
     public void deleteByUserId(Long userId) {
         refreshTokenRepository.deleteByUser(userRepository.findById(userId).get());

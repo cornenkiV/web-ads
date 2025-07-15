@@ -36,12 +36,27 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found."));
     }
 
+    /**
+     * Finds user by username
+     *
+     * @param username username of the user
+     * @return {@link User} object
+     * @throws ResourceNotFoundException if user doesnt exist
+     */
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User witn username: " + username + " not found"));
     }
 
 
+    /**
+     * Registers a new user
+     * Hashes the password before saving
+     *
+     * @param registrationDTO DTO containing user registration data
+     * @return {@link User} object.
+     * @throws UserAlreadyExistsException if user with the same username already exists
+     */
     public User register(UserRegistrationDTO registrationDTO) {
         if (userRepository.findByUsername(registrationDTO.getUsername()).isPresent()) {
             throw new UserAlreadyExistsException("Username '" + registrationDTO.getUsername() + "' already exists.");
